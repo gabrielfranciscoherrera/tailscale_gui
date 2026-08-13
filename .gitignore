@@ -1,0 +1,72 @@
+# =========================================================================
+# Flutter / Dart
+# =========================================================================
+.dart_tool/
+.flutter-plugins-dependencies
+.flutter-plugins
+.packages
+.pub-cache/
+.pub/
+/build/
+**/doc/api/
+coverage/
+
+# =========================================================================
+# Build outputs
+# =========================================================================
+# Bundle release copiado a ~/.local (referencia, no parte del repo)
+**/bundle/
+*.so
+*.dylib
+*.dll
+*.sym
+*.symbols
+*.map.json
+
+# =========================================================================
+# IDE
+# =========================================================================
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+
+# =========================================================================
+# OS
+# =========================================================================
+.DS_Store
+Thumbs.db
+
+# =========================================================================
+# Credenciales / secrets — NUNCA commitear
+# =========================================================================
+# Auth de la app (PIN de sudo del usuario)
+**/auth.json
+**/accounts.json
+# Authkeys de Tailscale u otros servicios
+**/.env
+**/.env.local
+**/.env.staging
+**/.env.production
+**/.envrc
+# Patrones genéricos de secretos
+**/secrets.yaml
+**/secrets.json
+**/credentials.json
+**/*.key
+**/*.pem
+**/*.p12
+
+# =========================================================================
+# Local
+# =========================================================================
+# Archivos del proyecto Flutter que se regeneran
+.metadata
+.tmp/
+*.tmp
+*.bak
+*.orig

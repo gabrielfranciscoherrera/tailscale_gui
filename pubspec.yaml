@@ -1,0 +1,27 @@
+name: tailscale_tray
+description: "Tailscale multi-account tray monitor for Linux."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  tray_manager: ^0.5.3
+  window_manager: ^0.5.2
+  path_provider: ^2.1.4
+  shared_preferences: ^2.3.2
+  process_run: ^1.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/tray_icon.png
