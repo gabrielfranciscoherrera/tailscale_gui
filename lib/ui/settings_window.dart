@@ -49,30 +49,29 @@ class _SettingsWindowState extends State<SettingsWindow> {
   }
 
   Widget _buildInterfacesPanel() {
-    final visible = _interfaces.where((i) =>
-        !i.isLoopback &&
-        i.addresses.isNotEmpty &&
-        (i.isUp || i.isTailscale));
+    final visible = _interfaces.where((i) => i.isTailscale && i.isUp);
     if (visible.isEmpty) return const SizedBox.shrink();
 
     return Container(
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.blueGrey.shade50,
+        color: Colors.indigo.shade50,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.blueGrey.shade200),
+        border: Border.all(color: Colors.indigo.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.lan, size: 16, color: Colors.blueGrey),
+              Icon(Icons.lock, size: 16, color: Colors.indigo.shade700),
               const SizedBox(width: 6),
-              const Text('Interfaces de red',
+              Text('Tailscale activo',
                   style: TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.bold)),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo.shade900)),
               const Spacer(),
               IconButton(
                 icon: Icon(
@@ -87,20 +86,18 @@ class _SettingsWindowState extends State<SettingsWindow> {
           ),
           if (!_ifCollapsed)
             ...visible.map((iface) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 130,
+                        width: 140,
                         child: Text(
-                          iface.displayName,
+                          iface.name,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: iface.isTailscale
-                                ? Colors.indigo.shade700
-                                : Colors.blueGrey.shade800,
+                            color: Colors.indigo.shade800,
                             fontFamily: 'monospace',
                           ),
                         ),
@@ -128,19 +125,13 @@ class _SettingsWindowState extends State<SettingsWindow> {
                                           horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: a.isIpv4
-                                            ? (iface.isTailscale
-                                                ? Colors.indigo.shade100
-                                                : Colors.green.shade50)
+                                            ? Colors.indigo.shade100
                                             : Colors.grey.shade200,
                                         borderRadius:
                                             BorderRadius.circular(4),
                                         border: Border.all(
                                             color: a.isIpv4
-                                                ? (iface.isTailscale
-                                                    ? Colors.indigo
-                                                        .shade300
-                                                    : Colors.green
-                                                        .shade300)
+                                                ? Colors.indigo.shade300
                                                 : Colors.grey.shade400,
                                             width: 0.5),
                                       ),
@@ -150,9 +141,7 @@ class _SettingsWindowState extends State<SettingsWindow> {
                                           fontSize: 11,
                                           fontFamily: 'monospace',
                                           color: a.isIpv4
-                                              ? (iface.isTailscale
-                                                  ? Colors.indigo.shade900
-                                                  : Colors.green.shade900)
+                                              ? Colors.indigo.shade900
                                               : Colors.grey.shade700,
                                           fontWeight: a.isIpv4
                                               ? FontWeight.w500
