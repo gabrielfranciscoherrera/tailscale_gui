@@ -21,7 +21,7 @@ lib/
   main.dart                   init window + tray + run app
   models/config_service.dart  Account, AccountConfig
   services/
-    config_service.dart       JSON en ~/.config/tailscale-tray/ (chmod 600)
+    config_service.dart       JSON en ~/.config/tailscale-gui/ (chmod 600)
     daemon_manager.dart       pkexec start/stop por cuenta
     tailscale_service.dart    probe socket → IP/status
   tray/tray_controller.dart   icono + menú dinámico (refresh 10s)
@@ -41,15 +41,15 @@ flutter build linux --release
 ## Instalar
 
 ```bash
-mkdir -p ~/.local/share/tailscale-tray
-cp -r build/linux/x64/release/bundle/* ~/.local/share/tailscale-tray/
-ln -sf ~/.local/share/tailscale-tray/tailscale_gui ~/.local/bin/tailscale-tray
+mkdir -p ~/.local/share/tailscale-gui
+cp -r build/linux/x64/release/bundle/* ~/.local/share/tailscale-gui/
+ln -sf ~/.local/share/tailscale-gui/tailscale_gui ~/.local/bin/tailscale-gui
 ```
 
 ## Autoarranque
 
 ```bash
-cp tailscale-tray.desktop ~/.config/autostart/
+cp tailscale-gui.desktop ~/.config/autostart/
 ```
 
 ## Configuración

@@ -4,7 +4,7 @@ import 'dart:io';
 
 /// Maneja el PIN de root (sudo password) del usuario.
 ///
-/// El PIN se guarda plano en `~/.config/tailscale-tray/auth.json` con
+/// El PIN se guarda plano en `~/.config/tailscale_gui/auth.json` con
 /// permisos 0600. No es ideal en seguridad pero es lo que pidió el usuario
 /// para evitar el diálogo polkit cada vez.
 class PinTestResult {
@@ -19,7 +19,7 @@ class AuthService {
 
   Future<File> _getFile() async {
     final dir = Directory(
-        '${Platform.environment['HOME']}/.config/tailscale-tray');
+        '${Platform.environment['HOME']}/.config/tailscale_gui');
     if (!await dir.exists()) await dir.create(recursive: true);
     return File('${dir.path}/$_authFile');
   }

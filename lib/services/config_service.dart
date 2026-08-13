@@ -7,7 +7,7 @@ class ConfigService {
   static const _configFile = 'accounts.json';
 
   Future<File> _getConfigFile() async {
-    final configDir = Directory('${Platform.environment['HOME']}/.config/tailscale-tray');
+    final configDir = Directory('${Platform.environment['HOME']}/.config/tailscale_gui');
     if (!await configDir.exists()) {
       await configDir.create(recursive: true);
     }

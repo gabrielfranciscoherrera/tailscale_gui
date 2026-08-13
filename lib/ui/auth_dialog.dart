@@ -115,7 +115,7 @@ class _AuthSettingsDialogState extends State<AuthSettingsDialog> {
               obscureText: _obscure,
               decoration: InputDecoration(
                 labelText: _hasPin ? 'Nuevo PIN (sudo)' : 'Tu PIN de sudo',
-                helperText: 'Es tu contraseña de root/sudo. Se guarda en ~/.config/tailscale-tray/auth.json con permisos 0600.',
+                helperText: 'Es tu contraseña de root/sudo. Se guarda en ~/.config/tailscale_gui/auth.json con permisos 0600.',
                 suffixIcon: IconButton(
                   icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
                   onPressed: () => setState(() => _obscure = !_obscure),
