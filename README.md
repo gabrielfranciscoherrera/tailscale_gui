@@ -1,4 +1,4 @@
-# tailscale_tray
+# tailscale_gui
 
 Monitor de múltiples cuentas Tailscale en la bandeja del sistema (Linux).
 
@@ -34,7 +34,7 @@ scripts/fix-tray-manager.sh   patch durable para pub-cache
 
 ```bash
 flutter pub get
-~/Projects/tailscale_tray/scripts/fix-tray-manager.sh   # solo la primera vez / tras upgrade
+~/Projects/tailscale_gui/scripts/fix-tray-manager.sh   # solo la primera vez / tras upgrade
 flutter build linux --release
 ```
 
@@ -43,7 +43,7 @@ flutter build linux --release
 ```bash
 mkdir -p ~/.local/share/tailscale-tray
 cp -r build/linux/x64/release/bundle/* ~/.local/share/tailscale-tray/
-ln -sf ~/.local/share/tailscale-tray/tailscale_tray ~/.local/bin/tailscale-tray
+ln -sf ~/.local/share/tailscale-tray/tailscale_gui ~/.local/bin/tailscale-tray
 ```
 
 ## Autoarranque
@@ -54,15 +54,15 @@ cp tailscale-tray.desktop ~/.config/autostart/
 
 ## Configuración
 
-`~/.config/tailscale-tray/accounts.json` (chmod 600):
+`~/.config/tailscale_gui/accounts.json` (chmod 600):
 
 ```json
 {
   "accounts": [
-    {"id": "ara",   "label": "Ara",     "port": 41641, "authkey": "tskey-..."},
-    {"id": "bits",  "label": "Bits",    "port": 41642}
+    {"id": "tailscale-account-1", "label": "Account 1", "port": 41641, "authkey": "tskey-..."},
+    {"id": "tailscale-account-2", "label": "Account 2", "port": 41642}
   ],
-  "activeAccountId": "ara"
+  "activeAccountId": "tailscale-account-1"
 }
 ```
 

@@ -1,4 +1,4 @@
-name: tailscale_tray
+name: tailscale_gui
 description: "Tailscale multi-account tray monitor for Linux."
 publish_to: 'none'
 version: 1.0.0+1

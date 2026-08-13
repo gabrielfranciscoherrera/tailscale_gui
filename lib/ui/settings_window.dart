@@ -551,7 +551,7 @@ class _AddAccountDialogState extends State<_AddAccountDialog> {
             TextField(
               controller: _label,
               decoration:
-                  const InputDecoration(labelText: 'Label (e.g. Ara SRL)'),
+                  const InputDecoration(labelText: 'Label (e.g. My Account 1)'),
             ),
             TextField(
               controller: _port,
