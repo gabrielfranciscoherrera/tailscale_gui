@@ -189,7 +189,9 @@ exit 0
     final pidFile = '$stateDir/tailscaled.pid';
     final cmd = '''
 sock="${account.socketPath}"
-[ -S "\$sock" ] && /usr/bin/tailscale --socket="\$sock" logout 2>/dev/null || true
+# 'down' (no 'logout') preserva la auth para que el daemon pueda reanudar
+# la sesión al re-arrancar sin pedir URL de login nueva.
+[ -S "\$sock" ] && /usr/bin/tailscale --socket="\$sock" down 2>/dev/null || true
 if [ -f "$pidFile" ]; then
   pid=\$(cat "$pidFile" 2>/dev/null)
   if [ -n "\$pid" ] && kill -0 "\$pid" 2>/dev/null; then
@@ -211,7 +213,8 @@ exit 0
       final pidFile = '$stateDir/tailscaled.pid';
       return '''
 sock="${a.socketPath}"
-[ -S "\$sock" ] && /usr/bin/tailscale --socket="\$sock" logout 2>/dev/null || true
+# 'down' preserva la auth para reanudar al re-arrancar.
+[ -S "\$sock" ] && /usr/bin/tailscale --socket="\$sock" down 2>/dev/null || true
 if [ -f "$pidFile" ]; then
   pid=\$(cat "$pidFile" 2>/dev/null)
   if [ -n "\$pid" ] && kill -0 "\$pid" 2>/dev/null; then
