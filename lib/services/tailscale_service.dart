@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
-enum AccountStatus { online, offline, starting, error }
+enum AccountStatus { online, offline, starting, needsLogin, error }
 
 class AccountInfo {
   final String id;
   final AccountStatus status;
   final String? ipv4;
   final String? hostname;
+  final String? backendState;
+  final String? authUrl;
   final String? error;
 
   AccountInfo({
@@ -14,6 +17,8 @@ class AccountInfo {
     required this.status,
     this.ipv4,
     this.hostname,
+    this.backendState,
+    this.authUrl,
     this.error,
   });
 
@@ -25,6 +30,8 @@ class AccountInfo {
         return 'offline';
       case AccountStatus.starting:
         return 'starting...';
+      case AccountStatus.needsLogin:
+        return authUrl != null ? 'login pendiente' : 'needs login';
       case AccountStatus.error:
         return 'error: ${error ?? "unknown"}';
     }
@@ -39,10 +46,11 @@ class TailscaleService {
     }
 
     try {
-      final result = await Process.run(
-        'tailscale',
-        ['--socket=$socketPath', 'status', '--json'],
-      ).timeout(const Duration(seconds: 3), onTimeout: () {
+      final result = await Process.run('tailscale', [
+        '--socket=$socketPath',
+        'status',
+        '--json',
+      ]).timeout(const Duration(seconds: 3), onTimeout: () {
         return ProcessResult(0, -1, '', 'timeout');
       });
 
@@ -54,18 +62,62 @@ class TailscaleService {
         );
       }
 
-      final stdout = result.stdout.toString();
-      final json = _parseSimple(stdout);
+      final Map<String, dynamic> json;
+      try {
+        json = jsonDecode(result.stdout.toString()) as Map<String, dynamic>;
+      } catch (e) {
+        return AccountInfo(
+          id: accountId,
+          status: AccountStatus.error,
+          error: 'JSON parse error: $e',
+        );
+      }
 
-      final ipv4 = json['IPv4'] as String?;
-      final hostname = json['Hostname'] as String?;
+      final backendState = json['BackendState'] as String?;
+      final authUrl = json['AuthURL'] as String?;
+      final hostname = (json['Self'] as Map?)?['HostName'] as String?;
 
-      return AccountInfo(
-        id: accountId,
-        status: AccountStatus.online,
-        ipv4: ipv4,
-        hostname: hostname,
-      );
+      // Self.TailscaleIPs puede ser null o un array de strings
+      String? ipv4;
+      final selfIps = (json['Self'] as Map?)?['TailscaleIPs'];
+      if (selfIps is List && selfIps.isNotEmpty) {
+        ipv4 = selfIps.first as String?;
+      }
+
+      // Mapear BackendState → status
+      switch (backendState) {
+        case 'Running':
+          return AccountInfo(
+            id: accountId,
+            status: AccountStatus.online,
+            ipv4: ipv4,
+            hostname: hostname,
+            backendState: backendState,
+          );
+        case 'NeedsLogin':
+          return AccountInfo(
+            id: accountId,
+            status: AccountStatus.needsLogin,
+            authUrl: authUrl,
+            backendState: backendState,
+          );
+        case 'Starting':
+        case 'Waiting':
+          return AccountInfo(
+            id: accountId,
+            status: AccountStatus.starting,
+            backendState: backendState,
+          );
+        case 'NoState':
+        case 'Stopped':
+        case null:
+        default:
+          return AccountInfo(
+            id: accountId,
+            status: AccountStatus.offline,
+            backendState: backendState,
+          );
+      }
     } catch (e) {
       return AccountInfo(
         id: accountId,
@@ -73,17 +125,5 @@ class TailscaleService {
         error: e.toString(),
       );
     }
-  }
-
-  Map<String, dynamic> _parseSimple(String stdout) {
-    final lines = stdout.split('\n');
-    final result = <String, dynamic>{};
-    for (final line in lines) {
-      final match = RegExp(r'"([^"]+)":\s*"([^"]+)"').firstMatch(line);
-      if (match != null) {
-        result[match.group(1)!] = match.group(2)!;
-      }
-    }
-    return result;
   }
 }

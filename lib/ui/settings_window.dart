@@ -457,15 +457,40 @@ class _SettingsWindowState extends State<SettingsWindow> {
                                 style: TextStyle(
                                     fontSize: 10, color: Colors.grey.shade600),
                               )
+                            else if (info?.status == AccountStatus.needsLogin &&
+                                info?.authUrl != null)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => widget.daemonManager
+                                        .openInBrowser(info!.authUrl!),
+                                    child: Text(
+                                      '🔗 login (click para abrir)',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.blue.shade700,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                  Text('tun=${acc.id} • port=${acc.port}',
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey.shade600)),
+                                ],
+                              )
                             else
                               Text(info?.displayStatus ?? 'unknown'),
-                            if (!acc.hasAuthkey && info?.status != AccountStatus.online)
+                            if (!acc.hasAuthkey &&
+                                info?.status != AccountStatus.online)
                               TextButton.icon(
                                 icon: const Icon(Icons.link, size: 16),
                                 label: const Text('Get login URL',
                                     style: TextStyle(fontSize: 11)),
                                 style: TextButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
                                   minimumSize: const Size(0, 28),
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
