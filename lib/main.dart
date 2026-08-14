@@ -45,8 +45,8 @@ void main() async {
 
   // Auto-start de la cuenta activa al abrir la app (evita tener que hacer
   // click ▶ cada vez que reiniciás la PC). Si la sesión quedó válida en
-  // state, tailscaled reanuda sin pedir login.
-  unawaited(_autoStartActive(configService, daemonManager));
+  // state, tailscaled reanuda sin pedir login. Fire-and-forget.
+  _autoStartActive(configService, daemonManager);
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
