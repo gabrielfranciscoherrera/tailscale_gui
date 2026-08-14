@@ -16,12 +16,31 @@ class NetworkInterface {
 
   bool get isUp => state == 'UP';
   bool get isLoopback => name == 'lo';
-  bool get isTailscale => name.startsWith('tailscale') || name == 'tailscale0';
 
-  String get displayName {
-    if (isTailscale) return '🔒 $name';
-    return name;
+  /// Heurística: una interface es de Tailscale si su nombre empieza con
+  /// `tailscale` o si tiene alguna IP en el rango CGNAT 100.64.0.0/10
+  /// (donde Tailscale asigna IPs en userspace-networking mode).
+  bool get isTailscale {
+    if (name.startsWith('tailscale') || name == 'tailscale0') return true;
+    for (final a in addresses) {
+      if (a.isIpv4 && _isInCgnatRange(a.address)) return true;
+    }
+    return false;
   }
+
+  static bool _isInCgnatRange(String ip) {
+    // Tailscale usa el rango CGNAT 100.64.0.0/10 (RFC 6598)
+    final parts = ip.split('.');
+    if (parts.length != 4) return false;
+    final first = int.tryParse(parts[0]);
+    final second = int.tryParse(parts[1]);
+    if (first == null || second == null) return false;
+    if (first != 100) return false;
+    // 100.64/10 cubre 100.64.0.0 a 100.127.255.255
+    return second >= 64 && second <= 127;
+  }
+
+  String get displayName => '🔒 $name';
 }
 
 class NetworkAddress {

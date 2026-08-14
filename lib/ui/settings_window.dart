@@ -49,7 +49,9 @@ class _SettingsWindowState extends State<SettingsWindow> {
   }
 
   Widget _buildInterfacesPanel() {
-    final visible = _interfaces.where((i) => i.isTailscale && i.isUp);
+    // Mostrar interfaces con IP en 100.64/10 (Tailscale userspace-networking).
+    // Si están UP perfecto; si están UNKNOWN también (userspace tun suele quedar así).
+    final visible = _interfaces.where((i) => i.isTailscale);
     if (visible.isEmpty) return const SizedBox.shrink();
 
     return Container(
